@@ -21,8 +21,8 @@ import pdb
 
 # from ctcdecode import CTCBeamDecoder
 
-data_tar = tarfile.open('data.tar.gz')
-data_tar.extractall('./')
+data_tar = tarfile.open('../data.tar.gz')
+data_tar.extractall('../')
 data_tar.close()
 
 size = {'small' : 0,'mid' : 1, 'big' : 2}
@@ -91,18 +91,18 @@ len(Data.charlist)
 model = Model()
 opt = Adam(model.parameters(), lr=INIT_LR)
 lossFn = torch.nn.CTCLoss()
-# decoder = CTCBeamDecoder(
-#     list(Data.charlist),
-#     model_path=None,
-#     alpha=0,
-#     beta=0,
-#     cutoff_top_n=40,
-#     cutoff_prob=1.0,
-#     beam_width=100,
-#     num_processes=2,
-#     blank_id=0,
-#     log_probs_input=True
-# )
+decoder = CTCBeamDecoder(
+    list(Data.charlist),
+    model_path=None,
+    alpha=0,
+    beta=0,
+    cutoff_top_n=40,
+    cutoff_prob=1.0,
+    beam_width=100,
+    num_processes=2,
+    blank_id=0,
+    log_probs_input=True
+)
 
 H = {
 	"train_loss": [],
@@ -160,8 +160,8 @@ for epoch in range(EPOCHS):
 	H['train_loss'].append(totalTrainLoss)
 
 
-	# beam_results, beam_scores, timesteps, out_lens = decoder.decode(model_out)
-	# train_decode.append([beam_results, beam_scores, timesteps, out_lens])
+	beam_results, beam_scores, timesteps, out_lens = decoder.decode(model_out)
+	train_decode.append([beam_results, beam_scores, timesteps, out_lens])
 	
 	with torch.no_grad():
 		# set the model in evaluation mode
@@ -184,8 +184,8 @@ for epoch in range(EPOCHS):
 			# make the predictions and calculate the validation loss
 			val_loss = lossFn(model_out.permute(1,0,2), target, input_length, output_length)
 			totalValLoss += val_loss
-		# beam_results, beam_scores, timesteps, out_lens = decoder.decode(model_out)
-		# val_decode.append([beam_results, beam_scores, timesteps, out_lens])
+		beam_results, beam_scores, timesteps, out_lens = decoder.decode(model_out)
+		val_decode.append([beam_results, beam_scores, timesteps, out_lens])
 		print("val loss =",val_loss)
 
 	H['val_loss'].append(totalValLoss)
