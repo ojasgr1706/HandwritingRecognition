@@ -315,25 +315,25 @@ for epoch in range(EPOCHS):
 
 # Testing
 
-# with torch.no_grad():
-#   # set the model in evaluation mode
-#   model.eval()
-#   # loop over the validation set
-#   for (x, y) in testLoader:
-#     # send the input to the device
-#     target = []
+with torch.no_grad():
+  # set the model in evaluation mode
+  model.eval()
+  # loop over the validation set
+  for (x, y) in testLoader:
+    # send the input to the device
+    target = []
 
-#     for i in range(len(y)):
-#       target.append(encode(y[i],Data.mapping))
-#     target = torch.tensor(target)
-#     (x, target) = (x.to(device), target.to(device))
+    for i in range(len(y)):
+      target.append(encode(y[i],Data.mapping))
+    target = torch.tensor(target)
+    (x, target) = (x.to(device), target.to(device))
 
-#     model_out = model(x)
+    model_out = model(x)
     
-#     beam_results, beam_scores, timesteps, out_lens = decoder.decode(model_out)
-#     for i in range(len(y)):
-#       pred = beam_results[i][0][:out_lens[i][0]]
-#       print("ground truth :",y[i],"|| predicted :",decode(pred,Data.mapping))
+    beam_results, beam_scores, timesteps, out_lens = decoder.decode(model_out)
+    for i in range(len(y)):
+      pred = beam_results[i][0][:out_lens[i][0]]
+      print("ground truth :",y[i],"|| predicted :",decode(pred,Data.mapping))
 
 
 
